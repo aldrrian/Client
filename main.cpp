@@ -90,7 +90,20 @@ int main(int argc, char *argv[]) {
     boost::archive::binary_oarchive oa(s);
     oa << gp;
     s.flush();
+
     cout << serial_str << endl;
+
+    GridPoint *gp2;
+    boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
+    boost::archive::binary_iarchive ia(s2);
+    ia >> gp2;
+
+    cout << *gp2;
+
+    delete gp;
+    delete gp2;
+    return 0;
 
     cout << argv[1] << endl;
     Udp udp(0, atoi(argv[1]));

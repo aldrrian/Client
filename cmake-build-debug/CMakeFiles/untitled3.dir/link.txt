@@ -1,1 +1,0 @@
-/usr/bin/c++    -std=c++11 -pthread -g   CMakeFiles/untitled3.dir/main.cpp.o CMakeFiles/untitled3.dir/src/sockets/Socket.cpp.o CMakeFiles/untitled3.dir/src/sockets/Udp.cpp.o  -o untitled3 -rdynamic /usr/lib/x86_64-linux-gnu/libboost_serialization.so /usr/lib/x86_64-linux-gnu/libboost_system.so 

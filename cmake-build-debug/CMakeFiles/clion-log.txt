@@ -1,8 +1,0 @@
-/home/ran/Clion/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/ran/ClionProjects/untitled3
--- Boost version: 1.54.0
--- Found the following Boost libraries:
---   serialization
---   system
--- Configuring done
--- Generating done
--- Build files have been written to: /home/ran/ClionProjects/untitled3/cmake-build-debug
