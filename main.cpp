@@ -84,14 +84,12 @@ int main(int argc, char *argv[]) {
 
     GridPoint *gp = new GridPoint(new Poind(1,5));
 
-    std::string serial_str;
-    boost::iostreams::back_insert_device<std::string> inserter(serial_str);
+    char serial_str[1024];
+    boost::iostreams::back_insert_device<std::string> inserter(&serial_str);
     boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
     boost::archive::binary_oarchive oa(s);
     oa << gp;
     s.flush();
-
-    cout << serial_str << endl;
 
     GridPoint *gp2;
     boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
@@ -109,12 +107,12 @@ int main(int argc, char *argv[]) {
     udp.initialize();
 
     char buffer[1024];
-    udp.sendData(serial_str);
+    udp.sendData(serial_str.c_str());
     udp.reciveData(buffer, sizeof(buffer));
     cout << buffer << endl;
 
 
-    return 0;
+    return 1;
 }
 
 
