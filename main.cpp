@@ -25,7 +25,7 @@ std::string bufferToString(char* buffer, int bufflen)
 
     return ret;
 }
-
+asfx,cjnalxvjselfnxzoihnas,dixubas,md nkj
 int main(int argc, char *argv[]) {
     BFSPoint *st = new BFSPoint(2,1);
     BFSPoint *en = new BFSPoint(4,5);
