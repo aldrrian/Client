@@ -14,7 +14,9 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include "src/sockets/Udp.h"
 #include <unistd.h>
-#include "/home/shmuel/ClionProjects/newHope/TripInfo.h"
+#include "src/TripInfo.h"
+#include "src/Grid.h"
+#include "src/LuxuryCab.h"
 using namespace std;
 using namespace boost::archive;
 std::stringstream ss;
@@ -25,19 +27,12 @@ std::string bufferToString(char* buffer, int bufflen)
 
     return ret;
 }
-asfx,cjnalxvjselfnxzoihnas,dixubas,md nkj
 int main(int argc, char *argv[]) {
     BFSPoint *st = new BFSPoint(2,1);
     BFSPoint *en = new BFSPoint(4,5);
     TripInfo *ti = new TripInfo(1,st,en,2,20);
 
 string serial_str;
-boost::iostreams::back_insert_device<std::string> inserter(serial_str);
-boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
-boost::archive::binary_oarchive oa(s);
-oa << ti;
-s.flush();
-
 /*TripInfo *ti2;
 boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
 boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
@@ -48,16 +43,25 @@ cout << argv[1] << endl;
     Udp udp(0, atoi(argv[1]));
     udp.initialize();
     char buffer[1024];
-    udp.sendData("lol");
-    cout << serial_str << endl;
-    udp.reciveData(buffer, sizeof(buffer));
-    string str = bufferToString(buffer, sizeof(buffer));
-    TripInfo *ptr;
-    boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
+    /*udp.sendData("lol");
+    udp.reciveData(buffer, sizeof(buffer));*/
+    Grid *g = new Grid(7,8);
+    LuxuryCab *sc = new LuxuryCab(8, 'H', 'B');
+    boost::iostreams::back_insert_device<std::string> inserter(serial_str);
+    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
+    boost::archive::binary_oarchive oa(s);
+    oa << sc;
+    s.flush();
+    TripInfo *ti2;
+    Point *po2;
+    BFSPoint *yt;
+    Grid *g2;
+    LuxuryCab *sc2;
+    boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
     boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
     boost::archive::binary_iarchive ia(s2);
-    ia >> ptr;
-    cout << "("<<ptr->getEnd()->getX()<<","<<ptr->getEnd()->getY()<<")"<<endl;
+    ia >> sc2;
+    cout<< sc2->getID()<<endl;
 
 
     return 0;

@@ -44,6 +44,14 @@ public:
      * @return BFSPoint with those values.
      */
     BFSPoint* search(int x, int y);
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive &ar, const unsigned int version)
+    {
+        ar & size_x;
+        ar & size_y;
+        ar & matrix;
+    }
 };
 
 #endif /* GRID_H_ */
