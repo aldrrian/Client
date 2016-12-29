@@ -14,104 +14,50 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include "src/sockets/Udp.h"
 #include <unistd.h>
-
+#include "/home/shmuel/ClionProjects/newHope/TripInfo.h"
 using namespace std;
 using namespace boost::archive;
 std::stringstream ss;
 
-class Poind {
-    int x, y;
+std::string bufferToString(char* buffer, int bufflen)
+{
+    std::string ret(buffer, bufflen);
 
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
-    {
-        ar & x;
-        ar & y;
-    }
-public:
-    Poind(int x, int y) : x(x), y(y) {}
-
-    Poind() : x(0), y(0) {}
-    int getX() {return this->x;}
-    int getY() {return this->y;}
-
-};
-
-class GridPoint {
-    Poind *p;
-
-    friend class boost::serialization::access;
-
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
-    {
-        ar & p;
-    }
-
-public:
-    GridPoint(Poind *p) : p(p) {};
-    GridPoint() : p(NULL) {}
-    virtual ~GridPoint() {
-        delete p;
-    }
-    friend std::ostream& operator<< (std::ostream &os, const GridPoint &p);
-};
-
-std::ostream& operator<< (std::ostream &os, const GridPoint &p) {
-    os << '(' << p.p->getX() << ',' << p.p->getY() << ')';
-    return os;
+    return ret;
 }
 
-class D3GridPoint : public GridPoint {
-    int z;
-
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version)
-    {
-        ar & boost::serialization::base_object<GridPoint>(*this);
-        ar & z;
-    }
-public:
-    D3GridPoint(Poind *p, int z) : GridPoint(p), z(z) {};
-};
-
-
-
 int main(int argc, char *argv[]) {
-
-     GridPoint *gp = new GridPoint(new Poind(1,5));
+    BFSPoint *st = new BFSPoint(2,1);
+    BFSPoint *en = new BFSPoint(4,5);
+    TripInfo *ti = new TripInfo(1,st,en,2,20);
 
 string serial_str;
 boost::iostreams::back_insert_device<std::string> inserter(serial_str);
 boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
 boost::archive::binary_oarchive oa(s);
-oa << gp;
+oa << ti;
 s.flush();
 
-GridPoint *gp2;
+/*TripInfo *ti2;
 boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
 boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
 boost::archive::binary_iarchive ia(s2);
-ia >> gp2;
-
-cout << *gp2;
-
-delete gp;
-delete gp2;
-
+ia >> ti2;
+    cout << "("<<ti2->getEnd()->getX()<<","<<ti2->getEnd()->getY()<<")"<<endl;*/
 cout << argv[1] << endl;
     Udp udp(0, atoi(argv[1]));
     udp.initialize();
     char buffer[1024];
-    const char *bufferIn;
-    bufferIn = serial_str.c_str();
     udp.sendData("lol");
     cout << serial_str << endl;
     udp.reciveData(buffer, sizeof(buffer));
-    cout << buffer << endl;
+    string str = bufferToString(buffer, sizeof(buffer));
+    TripInfo *ptr;
+    boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
+    boost::archive::binary_iarchive ia(s2);
+    ia >> ptr;
+    cout << "("<<ptr->getEnd()->getX()<<","<<ptr->getEnd()->getY()<<")"<<endl;
 
 
     return 0;
