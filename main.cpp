@@ -82,37 +82,39 @@ public:
 
 int main(int argc, char *argv[]) {
 
-    GridPoint *gp = new GridPoint(new Poind(1,5));
+     GridPoint *gp = new GridPoint(new Poind(1,5));
 
-    char serial_str[1024];
-    boost::iostreams::back_insert_device<std::string> inserter(&serial_str);
-    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
-    boost::archive::binary_oarchive oa(s);
-    oa << gp;
-    s.flush();
+string serial_str;
+boost::iostreams::back_insert_device<std::string> inserter(serial_str);
+boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
+boost::archive::binary_oarchive oa(s);
+oa << gp;
+s.flush();
 
-    GridPoint *gp2;
-    boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
-    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
-    boost::archive::binary_iarchive ia(s2);
-    ia >> gp2;
+GridPoint *gp2;
+boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
+boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
+boost::archive::binary_iarchive ia(s2);
+ia >> gp2;
 
-    cout << *gp2;
+cout << *gp2;
 
-    delete gp;
-    delete gp2;
+delete gp;
+delete gp2;
 
-    cout << argv[1] << endl;
+cout << argv[1] << endl;
     Udp udp(0, atoi(argv[1]));
     udp.initialize();
-
     char buffer[1024];
-    udp.sendData(serial_str.c_str());
+    const char *bufferIn;
+    bufferIn = serial_str.c_str();
+    udp.sendData("lol");
+    cout << serial_str << endl;
     udp.reciveData(buffer, sizeof(buffer));
     cout << buffer << endl;
 
 
-    return 1;
+    return 0;
 }
 
 
