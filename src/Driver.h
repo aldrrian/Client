@@ -49,6 +49,16 @@ namespace std {
          */
         Driver(int identity, int age, char ms, int exp, int vId, BFSPoint* r);
         /**
+         * constructor.
+         * @param identity is the id of the driver.
+         * @param age is the driver's age.
+         * @param ms is the MaritalStatus of the driver.
+         * @param exp is the driver's experience.
+         * @param vID is the vehicle' ID.
+         */
+        Driver(int identity, int age, char ms, int exp, int vId);
+
+        /**
          * default constructor.
          */
         Driver();

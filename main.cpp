@@ -15,8 +15,11 @@
 #include "src/sockets/Udp.h"
 #include <unistd.h>
 #include "src/TripInfo.h"
+#include "src/Driver.h"
 #include "src/Grid.h"
-#include "src/LuxuryCab.h"
+#include "src/StandartCab.h"
+
+
 using namespace std;
 using namespace boost::archive;
 std::stringstream ss;
@@ -28,43 +31,34 @@ std::string bufferToString(char* buffer, int bufflen)
     return ret;
 }
 int main(int argc, char *argv[]) {
-    BFSPoint *st = new BFSPoint(2,1);
-    BFSPoint *en = new BFSPoint(4,5);
-    TripInfo *ti = new TripInfo(1,st,en,2,20);
-
-string serial_str;
-/*TripInfo *ti2;
-boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
-boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
-boost::archive::binary_iarchive ia(s2);
-ia >> ti2;
-    cout << "("<<ti2->getEnd()->getX()<<","<<ti2->getEnd()->getY()<<")"<<endl;*/
-cout << argv[1] << endl;
-    Udp udp(0, atoi(argv[1]));
+    int vehicle_id, age, exp, driver_id;
+    char status, space;
+    cin >> driver_id >> space >> age >> space >> status
+        >> space >> exp >> space >> vehicle_id;
+    Driver d(driver_id, age, status,
+                            exp, vehicle_id);
+    int PortNumb = 5555;
+    Udp udp(0, PortNumb);
     udp.initialize();
-    char buffer[1024];
-    /*udp.sendData("lol");
-    udp.reciveData(buffer, sizeof(buffer));*/
-    Grid *g = new Grid(7,8);
-    LuxuryCab *sc = new LuxuryCab(8, 'H', 'B');
-    boost::iostreams::back_insert_device<std::string> inserter(serial_str);
-    boost::iostreams::stream<boost::iostreams::back_insert_device<std::string> > s(inserter);
-    boost::archive::binary_oarchive oa(s);
-    oa << sc;
-    s.flush();
-    TripInfo *ti2;
-    Point *po2;
-    BFSPoint *yt;
-    Grid *g2;
-    LuxuryCab *sc2;
-    boost::iostreams::basic_array_source<char> device(serial_str.c_str(), serial_str.size());
-    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
-    boost::archive::binary_iarchive ia(s2);
-    ia >> sc2;
-    cout<< sc2->getID()<<endl;
+    char buffer[1024], buffer2[1024];
+    udp.sendData(to_string(vehicle_id));
+    udp.reciveData(buffer, sizeof(buffer));
+    string str = bufferToString(buffer, sizeof(buffer));
+    StandartCab *c;
+    boost::iostreams::basic_array_source<char> device(str.c_str(), str.size());
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s(device);
+    boost::archive::binary_iarchive ia(s);
+    ia >> c;
+    cout << "("<<c->getID()<<")"<<endl;
+    udp.reciveData(buffer2, sizeof(buffer2));
+    str = bufferToString(buffer2, sizeof(buffer2));
+    Grid *g;
+    boost::iostreams::basic_array_source<char> device2(str.c_str(), str.size());
+    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device2);
+    boost::archive::binary_iarchive ia2(s2);
+    ia2 >> g;
+    cout << "("<<g->root()->getX()<<")"<<endl;
 
-
-    return 0;
 }
 
 

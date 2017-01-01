@@ -71,10 +71,10 @@ namespace std {
         template<class Archive>
         void serialize(Archive &ar, const unsigned int version)
         {
-            ar & id;
-            ar & kilometerPassed;
-            ar & manu;
-            ar & color;
+                ar & id;
+                ar & kilometerPassed;
+                ar & manu;
+                ar & color;
         }
     };
 
