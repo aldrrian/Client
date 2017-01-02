@@ -21,7 +21,6 @@ namespace std {
         currentLocation = r;
         haveAPassengers = false;
         amIOccupied = false;
-        myRoad = NULL;
         myPassenger = NULL;
     }
     Driver::Driver(int identity, int a, char ms, int e, int vId) {
@@ -37,7 +36,6 @@ namespace std {
         currentLocation = NULL;
         haveAPassengers = false;
         amIOccupied = false;
-        myRoad = NULL;
         myPassenger = NULL;
     }
     Driver::Driver() {
@@ -75,40 +73,24 @@ namespace std {
     }
     void Driver::setCab(Cab* c) {
         cab = c;
+        cab->setMyLocation(currentLocation);
     }
     BFSPoint* Driver::getLocation() {
         return currentLocation;
     }
-    void Driver::setLocation(BFSPoint *start) {
-        this->currentLocation = start;
-    }
     int Driver::findShortPath(TripInfo* ti) {
         Bfs b;
-        return b.path(currentLocation,ti->getStart())->getHeight();
+        return (int)b.path(currentLocation,ti->getStart()).size();
 
     }
     void Driver::drive(){
-        int type = getCab()->getType();
-        switch (type) {
-            case 1:
-                //standart cab. progress one point each time.
-                currentLocation = (BFSPoint*)myRoad->getNext();
-                pickUp();
-                road();
-                currentLocation = myRoad;
-                dropOff();
-                break;
-            case 2:
-                //luxury cab. progress two points each time.
-                currentLocation = myRoad;
-                pickUp();
-                road();
-                currentLocation = myRoad;
-                dropOff();
-                break;
-            default:break;
+        if (currentLocation->equal(tripInfo->getStart())) {
+            pickUp();
         }
-
+        setLocation(cab->drive(&myWay));
+        if (currentLocation->equal(tripInfo->getEnd())) {
+            dropOff();
+        }
     }
     MaritalStatus Driver::getMaritalStatus() {
         return maritalStatus;
@@ -135,30 +117,21 @@ namespace std {
         return vehicleId;
     }
     void Driver::road() {
-        BFSPoint *road;
         Bfs b;
-        if (haveAPassengers) {
-            road = (BFSPoint*)b.path(currentLocation, tripInfo->getEnd());
-            tripInfo->setMeter(road->getHeight());
-            cab->setKiloPassed(road->getHeight());
-            while (!road->equal(currentLocation)) {
-                road = (BFSPoint*)road->getFather();
-            }
-            myRoad = road;
+        if (currentLocation->equal(tripInfo->getStart())) {
+            myWay = b.path(currentLocation, tripInfo->getEnd());
+            tripInfo->setMeter(myWay.size());
+            cab->setKiloPassed(myWay.size());
         } else {
-            road = (BFSPoint *) b.path(currentLocation, tripInfo->getStart());
+            myWay = b.path(currentLocation, tripInfo->getStart());
             if (! currentLocation->equal(tripInfo->getStart())) {
-                cab->setKiloPassed(road->getHeight());
+                cab->setKiloPassed(myWay.size());
             }
-            while (!road->equal(currentLocation)) {
-                road = (BFSPoint*)road->getFather();
-            }
-            myRoad = road;
         }
     }
     void Driver::pickUp() {
-        haveAPassengers = true;
         clients++;
+        road();
     }
     void Driver::dropOff() {
         setSatisfaction(myPassenger->randSatisfaction());
@@ -174,6 +147,9 @@ namespace std {
     }
     char Driver::myMaritst() {
         return marist;
+    }
+    void Driver::setLocation(BFSPoint *loc) {
+        currentLocation = loc;
     }
 
 } /* namespace std */

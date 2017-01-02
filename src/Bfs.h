@@ -20,6 +20,7 @@ class Bfs {
 private:
     std::queue<Node*> queue;
     std::vector<Node*> vis;
+    std::stack<Node*> waze;
 public:
 /**
  * default constructor.
@@ -35,7 +36,7 @@ public:
      * @param s the destination
      * @return node s after initilaize all the sons from s to r.
      */
-    Node* path(Node* r, Node* s);
+    std::stack<Node*> path(Node* r, Node* s);
     /**
      * this function checks if the node was already visited by the algorithm.
      * @param n is the node we want to check it about him.

@@ -33,10 +33,10 @@ namespace std {
         float satisfaction, memo;
         Cab *cab;
         BFSPoint *currentLocation;
-        BFSPoint *myRoad;
         TripInfo *tripInfo;
         bool haveAPassengers, amIOccupied;
         Passenger *myPassenger;
+        stack<Node*> myWay;
 
     public:
         /**
@@ -105,11 +105,6 @@ namespace std {
          */
         BFSPoint* getLocation();
         /**
-         * Set location - mainly for startpoint
-         * @param start BFSPoint
-         **/
-        void setLocation(BFSPoint* start);
-        /**
          * the taxi center operates bfs from the current location
          * to a new trip start point,
          * and recives  the distance to the start point.
@@ -164,6 +159,7 @@ namespace std {
          */
         bool occupied();
         char myMaritst();
+        void setLocation(BFSPoint *loc);
         friend class boost::serialization::access;
         template<class Archive>
         void serialize(Archive &ar, const unsigned int version)
@@ -180,7 +176,6 @@ namespace std {
             ar & currentLocation;
             ar & haveAPassengers;
             ar & amIOccupied;
-            ar & myRoad;
             ar & myPassenger;
         }
     };

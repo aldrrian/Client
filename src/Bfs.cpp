@@ -19,7 +19,7 @@ bool Bfs::visited(Node* n) {
     }
     return false;
 }
-Node* Bfs::path(Node* r, Node* s) {
+std::stack<Node*> Bfs::path(Node* r, Node* s) {
     Node* end;
     Node* ptr;
     vector<Node*>* p;
@@ -73,9 +73,9 @@ Node* Bfs::path(Node* r, Node* s) {
     vis.clear();
     Node *ptro = end;
     while(!ptro->equal(r)) {
-        ptr = ptro->getFather();
-        ptr->setNext(ptro);
-        ptro = ptr;
+        waze.push(ptro);
+        ptro = ptro->getFather();
     }
-    return end;
+    //waze->push(ptro);
+    return waze;
 }
