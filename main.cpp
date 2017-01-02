@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
     boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
     boost::archive::binary_iarchive ia(s2);
     ia >> ti;
-    //s.flush();
+    //s.flush();//
     cout << "(" << ti->getTariff() << ")" << endl;
 
 }
