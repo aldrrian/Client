@@ -39,14 +39,14 @@ int main(int argc, char *argv[]) {
     cin >> driver_id >> space >> age >> space >> status
         >> space >> exp >> space >> vehicle_id;
     Driver *d = new Driver(driver_id, age, status,
-                            exp, vehicle_id);
+                           exp, vehicle_id);
     int PortNumb = 5555;
     Udp udp(0, PortNumb);
     udp.initialize();
     char buffer[4096];
     char buffer2[11264];
     char buffer3[4096];
-    char buffer4[4096];
+
     std::string serial_str;
     boost::iostreams::back_insert_device<std::string>
             inserter(serial_str);
@@ -65,8 +65,8 @@ int main(int argc, char *argv[]) {
         boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s(device);
         boost::archive::binary_iarchive ia(s);
         ia >> c;
+        d->setCab(c);
         //s.flush();
-        cout << "(" << c->getID() << ")" << endl;
     }
     else {
         udp.reciveData(buffer, sizeof(buffer));
@@ -76,8 +76,7 @@ int main(int argc, char *argv[]) {
         boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s(device);
         boost::archive::binary_iarchive ia(s);
         ia >> c;
-        //s.flush();
-        cout << "(" << c->getType() << ")" << endl;
+        d->setCab(c);
     }
     udp.reciveData(buffer2, sizeof(buffer2));//recieve grid
     string str2 = bufferToString(buffer2, sizeof(buffer2));
@@ -89,17 +88,27 @@ int main(int argc, char *argv[]) {
     //s3.flush();
     d->setLocation(g->root());
 
-    udp.reciveData(buffer4, sizeof(buffer4));//recieve tripinfo
-    serial_str = bufferToString(buffer4, sizeof(buffer4));
-    TripInfo *ti;
-    boost::iostreams::basic_array_source<char> device
-            (serial_str.c_str(), serial_str.size());
-    boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
-    boost::archive::binary_iarchive ia(s2);
-    ia >> ti;
-    //s.flush();//
-    cout << "(" << ti->getTariff() << ")" << endl;
-
+    while (true) {
+        char buffer4[10000];
+        udp.reciveData(buffer4, sizeof(buffer4));//recieve tripinfo
+        serial_str = bufferToString(buffer4, sizeof(buffer4));
+        if (!serial_str.compare("1")) {
+            TripInfo *ti;
+            boost::iostreams::basic_array_source<char> device
+                    (serial_str.c_str(), serial_str.size());
+            boost::iostreams::stream<boost::iostreams::basic_array_source<char> > s2(device);
+            boost::archive::binary_iarchive ia(s2);
+            ia >> ti;
+            //s.flush();//
+            cout << "(" << ti->getTariff() << ")" << endl;
+            char buffer5[4096] = "1";
+            while (buffer5 == "1") {
+                udp.reciveData(buffer5, sizeof(buffer5));
+                d->drive();
+                cout << d->getLocation()->getX();
+            }
+        }
+    }
 }
 
 
