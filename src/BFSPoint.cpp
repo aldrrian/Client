@@ -5,6 +5,9 @@
  *      Author: ran
  */
 #include "BFSPoint.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 using namespace std;
 
 BFSPoint::BFSPoint(int a, int b) {
@@ -114,4 +117,13 @@ bool BFSPoint::amIValid() {
 }
 void BFSPoint::setValid() {
     valid = !valid;
+}
+string BFSPoint::toString() {
+    string str;
+    str += "(";
+    str += to_string(po->getX());
+    str += ",";
+    str += to_string(po->getY());
+    str += ")";
+    return str;
 }
