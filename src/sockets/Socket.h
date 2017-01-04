@@ -80,7 +80,12 @@ public:
     * the data															   *
     ***********************************************************************/
     virtual int reciveData(char* buffer, int size) = 0;
-
+    /***********************************************************************
+     * function name: setIp	`		      							       *
+     * The Input: string ip address							               *
+     * The output: None													   *
+     ***********************************************************************/
+    virtual void setIp(string ipAddress) = 0;
 
 
 

@@ -49,6 +49,12 @@ public:
     * the data															   *
     ***********************************************************************/
     int reciveData(char* buffer, int size);
+    /***********************************************************************
+ * function name: setIp	`		      							       *
+ * The Input: string ip address							               *
+ * The output: None													   *
+ ***********************************************************************/
+    virtual void setIp(string ipAddress);
 };
 
 #endif /* UDP_H_ */

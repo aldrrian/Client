@@ -41,8 +41,10 @@ int main(int argc, char *argv[]) {
     Driver *d = new Driver(driver_id, age, status,
                            exp, vehicle_id);
     Grid *g;
-    int PortNumb = 6789;
+    int PortNumb = atoi(argv[2]);
     Udp udp(0, PortNumb);
+    string ip = argv[1];
+    udp.setIp(ip);
     udp.initialize();
     char buffer[10000];
     char buffer2[11264];
