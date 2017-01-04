@@ -27,7 +27,8 @@ namespace std {
     }
 
     TripInfo::~TripInfo() {
-
+        delete start;
+        delete end;
     }
     void TripInfo::setMeter(int i){
         meter = i;

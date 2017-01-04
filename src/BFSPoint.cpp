@@ -119,11 +119,7 @@ void BFSPoint::setValid() {
     valid = !valid;
 }
 string BFSPoint::toString() {
-    string str;
-    str += "(";
-    str += to_string(po->getX());
-    str += ",";
-    str += to_string(po->getY());
-    str += ")";
-    return str;
+    ostringstream s;
+    s << "("<<po->getX()<<","<<po->getY()<<")";
+    return s.str();
 }

@@ -48,6 +48,8 @@ namespace std {
     }
     Driver::~Driver() {
         delete  cab;
+
+        delete tripInfo;
     }
     int Driver::getId() {
         return id;

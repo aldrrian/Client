@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
 /**
  * this class is the point that we are operating the bfs on.
  * holds a point, and inherit from node.

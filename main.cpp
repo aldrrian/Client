@@ -89,15 +89,13 @@ int main(int argc, char *argv[]) {
     //s3.flush();
     d->setLocation(g->root());
     bool exit = false;
-    TripInfo *ti;
+    TripInfo *ti = NULL;
     while (!exit) {
         char buffer4[4096];
         udp.reciveData(buffer4, sizeof(buffer4));
         switch (buffer4[0]) {
             case '4': {
-                BFSPoint *t = d->getLocation();
-                string str = t->toString();
-                udp.sendData(str);
+                udp.sendData(d->getLocation()->toString());
                 break;
             }
             case '7': {
@@ -111,12 +109,15 @@ int main(int argc, char *argv[]) {
                 if (!d->getLocation()->equal(ti->getEnd())) {
                     udp.sendData("1");
                 } else {
-                    delete ti;
                     udp.sendData("0");
                 }
                 break;
             }
             default: {
+
+                if (ti != NULL) {
+                    delete ti;
+                }
                 serial_str = bufferToString(buffer4, sizeof(buffer4));
                 boost::iostreams::basic_array_source<char> device
                         (serial_str.c_str(), serial_str.size());
